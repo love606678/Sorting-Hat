@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>你是哪種飲料？心理測驗</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #fffbe6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .question { margin-bottom: 30px; }
+    .options button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .options button:hover { border-color: #666; }
+    .result { font-size: 20px; font-weight: bold; margin-top: 20px; }
+    .share { margin-top: 30px; }
+    .share a { margin-right: 10px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>你是哪種飲料？</h1>
+    <div id="quiz"></div>
+    <div class="result hidden" id="result"></div>
+    <div class="share hidden" id="share">
+      <p>分享你的結果：</p>
+      <a href="#" id="fb" target="_blank">Facebook</a>
+      <a href="#" id="line" target="_blank">LINE</a>
+      <a href="#" id="tw" target="_blank">Twitter</a>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "你早上起床最想喝什麼？",
+        options: [
+          { text: "☕ 咖啡", type: "A" },
+          { text: "🧋 奶茶", type: "B" },
+          { text: "🍹 果汁", type: "C" }
+        ]
+      },
+      {
+        text: "假日你最常出現在哪裡？",
+        options: [
+          { text: "書店", type: "A" },
+          { text: "百貨公司", type: "B" },
+          { text: "海邊", type: "C" }
+        ]
+      },
+      {
+        text: "朋友找你聚會你會？",
+        options: [
+          { text: "規劃流程", type: "A" },
+          { text: "跟著走", type: "B" },
+          { text: "到處玩", type: "C" }
+        ]
+      }
+    ];
+
+    const results = {
+      A: "你是理性實用型！偏好有計畫、有效率的生活。",
+      B: "你是溫暖療癒型！喜歡熱鬧和陪伴。",
+      C: "你是自由創意型！追求新鮮、無拘無束。"
+    };
+
+    let current = 0;
+    const counts = { A: 0, B: 0, C: 0 };
+
+    const quizEl = document.getElementById('quiz');
+    const resultEl = document.getElementById('result');
+    const shareEl = document.getElementById('share');
+
+    function renderQuestion() {
+      const q = questions[current];
+      quizEl.innerHTML = `
+        <div class="question">
+          <h2>題目 ${current + 1}：${q.text}</h2>
+          <div class="options">
+            ${q.options.map((o, i) => `<button onclick="select('${o.type}')">${o.text}</button>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function select(type) {
+      counts[type]++;
+      current++;
+      if (current < questions.length) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      quizEl.classList.add('hidden');
+      let maxType = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+      const resultText = results[maxType];
+      resultEl.innerText = `🎉 ${resultText}`;
+      resultEl.classList.remove('hidden');
+
+      const shareUrl = encodeURIComponent(location.href);
+      const shareText = encodeURIComponent(`我的測驗結果：${resultText}`);
+
+      document.getElementById('fb').href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+      document.getElementById('line').href = `https://social-plugins.line.me/lineit/share?url=${shareUrl}`;
+      document.getElementById('tw').href = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
+
+      shareEl.classList.remove('hidden');
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
