@@ -1,0 +1,27 @@
+<div class="container">
+    <h1>你是哪種飲料？</h1>
+  
+    <div *ngIf="!showingResult">
+      <div class="question">
+        <h2>題目 {{ current + 1 }}：{{ questions[current].text }}</h2>
+        <div class="options">
+          <button *ngFor="let opt of questions[current]?.options"
+                  (click)="select(opt.type)">
+            {{ opt.text }}
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="result" *ngIf="showingResult">
+      🎉 {{ resultText }}
+    </div>
+  
+    <div class="share" *ngIf="showingResult">
+      <p>分享你的結果：</p>
+      <a [href]="fbShare" target="_blank">Facebook</a>
+      <a [href]="lineShare" target="_blank">LINE</a>
+      <a [href]="twShare" target="_blank">Twitter</a>
+    </div>
+</div>
+  
